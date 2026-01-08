@@ -25,7 +25,7 @@ public class Application {
     }
 
     private static String readMonthAndDay() {
-        System.out.println("비상 근무를 배정할 월과 시작 요일을 입력하세요> ");
+        System.out.print("비상 근무를 배정할 월과 시작 요일을 입력하세요> ");
         String input = Console.readLine();
         validateMonthAndDay(input);
         return input;
@@ -56,27 +56,28 @@ public class Application {
         validateAlphanumericKorean(day);
     }
 
-    // 빈 값 및 공백 검증
+    // TODO: 빈 값 및 공백 검증
     private static void validateNotBlank(String input) {
         if (input == null || input.isBlank()) {
             throw new IllegalArgumentException("[ERROR] 입력값이 비어있거나 공백입니다.");
         }
     }
 
-    // 구분자 및 리스트 개수 검증 (예: 쉼표가 없거나 하나도 안 나뉠 때)
+    // TODO: 구분자 및 리스트 개수 검증 (예: 쉼표가 없거나 하나도 안 나뉠 때)
     private static void validateDelimiter(String input, String delimiter) {
         if (!input.contains(delimiter)) {
             throw new IllegalArgumentException("[ERROR] 입력값은(" + delimiter + ")로 구분되어야 합니다.");
         }
     }
 
-    //  숫자 + 한글 + 영어만 허용 (특수문자 및 공백 불가)
+    // TODO: 숫자 + 한글 + 영어만 허용 (특수문자 및 공백 불가)
     private static void validateAlphanumericKorean(String input) {
         if (!input.matches("^[a-zA-Z0-9가-힣]+$")) {
             throw new IllegalArgumentException("[ERROR] 숫자, 한글, 영어만 입력 가능합니다.");
         }
     }
 
+    // TODO: 재시도 로직
     private static <T> T repeatUntilSuccess(Supplier<T> supplier) {
         while (true) {
             try {
