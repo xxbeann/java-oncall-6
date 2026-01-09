@@ -27,20 +27,14 @@ public class Application {
         List<String> monthAndDay = repeatUntilSuccess(Application::readMonthAndDay);
         String month = monthAndDay.get(0);
         String day = monthAndDay.get(1);
-        System.out.println("[Debug]입력받은 월: " + month);
-        System.out.println("[Debug]입력받은 날: " + day);
-        System.out.println("[Debug]day index: " + DAYS_OF_WEEK.indexOf(day));
+
         // TODO:2. 비상근무 사원 입력
         List<List<String>> emergencyStaff = repeatUntilSuccess(Application::readEmergencyStaff);
         List<String> weekdayStaff = emergencyStaff.get(0);
         List<String> holidayStaff = emergencyStaff.get(1);
-        System.out.println("[Debug]평일 비상근무: " + weekdayStaff);
-        System.out.println("[Debug]평일 비상근무: " + holidayStaff);
+
         // TODO:5. 근무 배정 기능
-        // TODO - 입력: 달, 날짜, 스태프 이름
-        // TODO - 출력: 달, 일, 요일 이름
         staffAssign(month, day, weekdayStaff, holidayStaff);
-        // TODO:4. 평일 + 공휴일의 경유에만 요일 뒤에 (휴일) 표기 하기
     }
 
     // TODO:5. 근무 배정 기능
@@ -60,7 +54,7 @@ public class Application {
                 if (!result.isEmpty()) {
                     if (tempholidayStaff.get(holidayIndex % tempholidayStaff.size()).equals(result.getLast())) {
                         Collections.swap(tempholidayStaff, holidayIndex % tempholidayStaff.size(),
-                                (holidayIndex+1) % tempholidayStaff.size());
+                                (holidayIndex + 1) % tempholidayStaff.size());
                     }
                 }
                 result.add(tempholidayStaff.get(holidayIndex % tempholidayStaff.size()));
@@ -70,7 +64,7 @@ public class Application {
                 if (!result.isEmpty()) {
                     if (tempholidayStaff.get(holidayIndex % tempholidayStaff.size()).equals(result.getLast())) {
                         Collections.swap(tempholidayStaff, holidayIndex % tempholidayStaff.size(),
-                                (holidayIndex+1) % tempholidayStaff.size());
+                                (holidayIndex + 1) % tempholidayStaff.size());
                     }
                 }
                 result.add(tempholidayStaff.get(holidayIndex % tempholidayStaff.size()));
@@ -80,7 +74,7 @@ public class Application {
                 if (!result.isEmpty()) {
                     if (tempholidayStaff.get(holidayIndex % tempholidayStaff.size()).equals(result.getLast())) {
                         Collections.swap(tempholidayStaff, holidayIndex % tempholidayStaff.size(),
-                                (holidayIndex+1) % tempholidayStaff.size());
+                                (holidayIndex + 1) % tempholidayStaff.size());
                     }
                 }
                 result.add(tempholidayStaff.get(holidayIndex % tempholidayStaff.size()));
@@ -91,7 +85,7 @@ public class Application {
                 if (!result.isEmpty()) {
                     if (tempWeekdayStaff.get(weekdayIndex % tempWeekdayStaff.size()).equals(result.getLast())) {
                         Collections.swap(tempWeekdayStaff, weekdayIndex % tempWeekdayStaff.size(),
-                                (weekdayIndex+1) % tempWeekdayStaff.size());
+                                (weekdayIndex + 1) % tempWeekdayStaff.size());
                     }
                 }
                 result.add(tempWeekdayStaff.get(weekdayIndex % tempWeekdayStaff.size()));
@@ -99,8 +93,6 @@ public class Application {
             }
             System.out.println(month + "월 " + i + "일 " + yoil + prefix + " " + result.get(i - 1));
         }
-        System.out.println(result);
-        System.out.println(result.size());
     }
 
     private static boolean isLegalHoliday(String month, int i) {
