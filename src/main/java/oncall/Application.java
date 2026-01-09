@@ -21,11 +21,13 @@ public class Application {
         // TODO:2. 평일 비상 근무 순서 입력 기능
         String weekdayStaff = repeatUntilSuccess(Application::readWeekdayStaff);
         // TODO:3. 휴일(토요일, 일요일, 공휴일) 비상 근무 순서 입력 기능
+        String holidayStaff = repeatUntilSuccess(Application::readHolidayStaff);
         // TODO:4. 평일 + 공휴일의 경유에만 요일 뒤에 (휴일) 표기 하기
         // TODO:5. 근무 배정 기능
 
     }
 
+    // TODO:1. 월과 시작요일 입력 기능
     private static String readMonthAndDay() {
         System.out.print("비상 근무를 배정할 월과 시작 요일을 입력하세요> ");
         String input = Console.readLine();
@@ -55,6 +57,7 @@ public class Application {
         validateAlphanumericKorean(day);
     }
 
+    // TODO:2. 평일 비상 근무 순서 입력 기능
     private static String readWeekdayStaff() {
         System.out.print("평일 비상 근무 순번대로 사원 닉네임을 입력하세요> ");
         String input = Console.readLine();
@@ -63,6 +66,26 @@ public class Application {
     }
 
     private static void validateWeekdayStaff(String input){
+        validateNotBlank(input);
+        validateDelimiter(input, ",");
+        List<String>temp = parseInput(input);
+        for (String temps : temp) {
+            validateNicknameNumberOfCharacter(temps);
+            validateBlankInElement(temps);
+        }
+        validateListSize(temp);
+        validateDuplicate(temp);
+    }
+
+    // TODO:3. 휴일(토요일, 일요일, 공휴일) 비상 근무 순서 입력 기능
+    private static String readHolidayStaff() {
+        System.out.print("휴일 비상 근무 순번대로 사원 닉네임을 입력하세요> ");
+        String input = Console.readLine();
+        validateHolidayStaff(input);
+        return input;
+    }
+
+    private static void validateHolidayStaff(String input){
         validateNotBlank(input);
         validateDelimiter(input, ",");
         List<String>temp = parseInput(input);
