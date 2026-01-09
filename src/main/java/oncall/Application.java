@@ -2,6 +2,7 @@ package oncall;
 
 import camp.nextstep.edu.missionutils.Console;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -18,6 +19,7 @@ public class Application {
         // TODO:1. 월과 시작요일 입력 기능
         String monthAndDay = repeatUntilSuccess(Application::readMonthAndDay);
         // TODO:2. 평일 비상 근무 순서 입력 기능
+        String weekdayStaff = repeatUntilSuccess(Application::readWeekdayStaff);
         // TODO:3. 휴일(토요일, 일요일, 공휴일) 비상 근무 순서 입력 기능
         // TODO:4. 평일 + 공휴일의 경유에만 요일 뒤에 (휴일) 표기 하기
         // TODO:5. 근무 배정 기능
@@ -34,10 +36,7 @@ public class Application {
     private static void validateMonthAndDay(String input) {
         validateNotBlank(input);
         validateDelimiter(input, ",");
-        List<String> temp = Arrays.stream(input.split(","))
-                .map(String::trim)
-                .filter(s -> !s.isBlank())
-                .toList();
+        List<String>temp= parseInput(input);
 
         if (temp.size() != 2) {
             throw new IllegalArgumentException("[ERROR] 월과 시작 요일을 쉼표(,)로 구분하여 입력하세요.");
@@ -54,6 +53,25 @@ public class Application {
         }
         validateAlphanumericKorean(month);
         validateAlphanumericKorean(day);
+    }
+
+    private static String readWeekdayStaff() {
+        System.out.print("평일 비상 근무 순번대로 사원 닉네임을 입력하세요> ");
+        String input = Console.readLine();
+        validateWeekdayStaff(input);
+        return input;
+    }
+
+    private static void validateWeekdayStaff(String input){
+        validateNotBlank(input);
+        validateDelimiter(input, ",");
+        List<String>temp = parseInput(input);
+        for (String temps : temp) {
+            validateNicknameNumberOfCharacter(temps);
+            validateBlankInElement(temps);
+        }
+        validateListSize(temp);
+        validateDuplicate(temp);
     }
 
     // TODO: 빈 값 및 공백 검증
@@ -75,6 +93,42 @@ public class Application {
         if (!input.matches("^[a-zA-Z0-9가-힣]+$")) {
             throw new IllegalArgumentException("[ERROR] 숫자, 한글, 영어만 입력 가능합니다.");
         }
+    }
+
+    // TODO: 닉네임 글자수 체크 로직
+    private static void validateNicknameNumberOfCharacter(String element){
+        if(element.length() > 5) {
+            throw new IllegalArgumentException("[ERROR] 이름은 5자 이하만 가능합니다: " + element);
+        }
+    }
+
+    // TODO: 리스트 요소에 공백이 포함되는지 검사
+    private static void validateBlankInElement(String element){
+        if (element.contains(" ")) {
+            throw new IllegalArgumentException("[ERROR] 이름에 공백을 포함할 수 없습니다: " + element);
+        }
+    }
+
+    // TODO: 리스트 사이즈 검사
+    private static void validateListSize(List<String> list) {
+        if (list.size() < 5 || list.size() > 35) {
+            throw new IllegalArgumentException("[ERROR] 비상근무자는 5명에서 35명 사이어야 합니다.");
+        }
+    }
+
+    // TODO: input 중복요소 검사
+    private static void validateDuplicate(List<String> temp) {
+        if (temp.size() != new HashSet<>(temp).size()) {
+            throw new IllegalArgumentException("[ERROR] 중복된 닉네임이 존재합니다.");
+        }
+    }
+
+    // TODO: 파싱 로직
+    private static List<String> parseInput(String input) {
+        return Arrays.stream(input.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isBlank())
+                .toList();
     }
 
     // TODO: 재시도 로직
