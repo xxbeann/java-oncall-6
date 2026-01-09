@@ -17,28 +17,27 @@ public class Application {
     public static void main(String[] args) {
         // TODO: 법정 공유일 1월 1일, 3월 1일, 5월 1일, 6월 6일, 8월 15일, 10월 3일, 10월 9일, 12월 25일
         // TODO:1. 월과 시작요일 입력 기능
-        String monthAndDay = repeatUntilSuccess(Application::readMonthAndDay);
-        // TODO:2. 평일 비상 근무 순서 입력 기능
-        String weekdayStaff = repeatUntilSuccess(Application::readWeekdayStaff);
-        // TODO:3. 휴일(토요일, 일요일, 공휴일) 비상 근무 순서 입력 기능
-        String holidayStaff = repeatUntilSuccess(Application::readHolidayStaff);
+        List<String> monthAndDay = repeatUntilSuccess(Application::readMonthAndDay);
+        String month = monthAndDay.get(0);
+        String day = monthAndDay.get(1);
+        // TODO:2. 비상근무 사원 입력
+        String emergencyStaff = repeatUntilSuccess(Application::readEmergencyStaff);
         // TODO:4. 평일 + 공휴일의 경유에만 요일 뒤에 (휴일) 표기 하기
         // TODO:5. 근무 배정 기능
 
     }
 
     // TODO:1. 월과 시작요일 입력 기능
-    private static String readMonthAndDay() {
+    private static List<String> readMonthAndDay() {
         System.out.print("비상 근무를 배정할 월과 시작 요일을 입력하세요> ");
         String input = Console.readLine();
-        validateMonthAndDay(input);
-        return input;
+        return validateMonthAndDay(input);
     }
 
-    private static void validateMonthAndDay(String input) {
+    private static List<String> validateMonthAndDay(String input) {
         validateNotBlank(input);
         validateDelimiter(input, ",");
-        List<String>temp= parseInput(input);
+        List<String> temp = parseInput(input);
 
         if (temp.size() != 2) {
             throw new IllegalArgumentException("[ERROR] 월과 시작 요일을 쉼표(,)로 구분하여 입력하세요.");
@@ -55,40 +54,25 @@ public class Application {
         }
         validateAlphanumericKorean(month);
         validateAlphanumericKorean(day);
+
+        return temp;
     }
 
-    // TODO:2. 평일 비상 근무 순서 입력 기능
-    private static String readWeekdayStaff() {
+    // TODO:2. 비상근무 사원 입력
+    private static String readEmergencyStaff() {
         System.out.print("평일 비상 근무 순번대로 사원 닉네임을 입력하세요> ");
-        String input = Console.readLine();
-        validateWeekdayStaff(input);
-        return input;
-    }
-
-    private static void validateWeekdayStaff(String input){
-        validateNotBlank(input);
-        validateDelimiter(input, ",");
-        List<String>temp = parseInput(input);
-        for (String temps : temp) {
-            validateNicknameNumberOfCharacter(temps);
-            validateBlankInElement(temps);
-        }
-        validateListSize(temp);
-        validateDuplicate(temp);
-    }
-
-    // TODO:3. 휴일(토요일, 일요일, 공휴일) 비상 근무 순서 입력 기능
-    private static String readHolidayStaff() {
+        String weekdayStaff = Console.readLine();
+        validateStaff(weekdayStaff);
         System.out.print("휴일 비상 근무 순번대로 사원 닉네임을 입력하세요> ");
-        String input = Console.readLine();
-        validateHolidayStaff(input);
-        return input;
+        String holidayStaff = Console.readLine();
+        validateStaff(holidayStaff);
+        return holidayStaff;
     }
 
-    private static void validateHolidayStaff(String input){
+    private static void validateStaff(String input) {
         validateNotBlank(input);
         validateDelimiter(input, ",");
-        List<String>temp = parseInput(input);
+        List<String> temp = parseInput(input);
         for (String temps : temp) {
             validateNicknameNumberOfCharacter(temps);
             validateBlankInElement(temps);
@@ -119,14 +103,14 @@ public class Application {
     }
 
     // TODO: 닉네임 글자수 체크 로직
-    private static void validateNicknameNumberOfCharacter(String element){
-        if(element.length() > 5) {
+    private static void validateNicknameNumberOfCharacter(String element) {
+        if (element.length() > 5) {
             throw new IllegalArgumentException("[ERROR] 이름은 5자 이하만 가능합니다: " + element);
         }
     }
 
     // TODO: 리스트 요소에 공백이 포함되는지 검사
-    private static void validateBlankInElement(String element){
+    private static void validateBlankInElement(String element) {
         if (element.contains(" ")) {
             throw new IllegalArgumentException("[ERROR] 이름에 공백을 포함할 수 없습니다: " + element);
         }
