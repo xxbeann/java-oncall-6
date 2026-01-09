@@ -20,8 +20,8 @@ public class Application {
         List<String> monthAndDay = repeatUntilSuccess(Application::readMonthAndDay);
         String month = monthAndDay.get(0);
         String day = monthAndDay.get(1);
-        System.out.println(month);
-        System.out.println(day);
+        System.out.println("[Debug]입력받은 월: " + month);
+        System.out.println("[Debug]입력받은 날: " + day);
         // TODO:2. 비상근무 사원 입력
         List<List<String>> emergencyStaff = repeatUntilSuccess(Application::readEmergencyStaff);
         List<String> weekdayStaff = emergencyStaff.get(0);
@@ -72,6 +72,7 @@ public class Application {
         System.out.print("휴일 비상 근무 순번대로 사원 닉네임을 입력하세요> ");
         String holidayStaffInput = Console.readLine();
         List<String> holidayStaff = validateStaff(holidayStaffInput);
+        validateStaffConsistency(weekdayStaff, holidayStaff);
         return List.of(weekdayStaff, holidayStaff);
     }
 
@@ -86,6 +87,12 @@ public class Application {
         validateListSize(temp);
         validateDuplicate(temp);
         return temp;
+    }
+
+    private static void validateStaffConsistency(List<String> weekdayStaff, List<String> holidayStaff){
+        if(!(new HashSet<>(holidayStaff).equals(new HashSet<>(weekdayStaff)))){
+            throw new IllegalArgumentException("[ERROR] 비상 근무자가 평일, 휴일 순번에 각각 1회 편성되지 않았습니다.");
+        }
     }
 
     // TODO: 빈 값 및 공백 검증
