@@ -13,6 +13,9 @@ public class Application {
     private static final List<String> DAYS_OF_WEEK = List.of(
             "월", "화", "수", "목", "금", "토", "일"
     );
+    private static final List<String> LEGAL_HOLIDAY = List.of(
+            "1-1", "3-1", "5-5", "6-6", "8-15", "10-3", "10-9", "12-25"
+    );
 
     public static void main(String[] args) {
         // TODO: 법정 공유일 1월 1일, 3월 1일, 5월 1일, 6월 6일, 8월 15일, 10월 3일, 10월 9일, 12월 25일
@@ -22,15 +25,54 @@ public class Application {
         String day = monthAndDay.get(1);
         System.out.println("[Debug]입력받은 월: " + month);
         System.out.println("[Debug]입력받은 날: " + day);
+        System.out.println("[Debug]day index: " + DAYS_OF_WEEK.indexOf(day));
         // TODO:2. 비상근무 사원 입력
         List<List<String>> emergencyStaff = repeatUntilSuccess(Application::readEmergencyStaff);
         List<String> weekdayStaff = emergencyStaff.get(0);
         List<String> holidayStaff = emergencyStaff.get(1);
-        System.out.println("[Debug]평일 비상근무: "+ weekdayStaff);
-        System.out.println("[Debug]평일 비상근무: "+ holidayStaff);
-        // TODO:4. 평일 + 공휴일의 경유에만 요일 뒤에 (휴일) 표기 하기
+        System.out.println("[Debug]평일 비상근무: " + weekdayStaff);
+        System.out.println("[Debug]평일 비상근무: " + holidayStaff);
         // TODO:5. 근무 배정 기능
+        staffAssign(month, day, weekdayStaff, holidayStaff);
+        // TODO:4. 평일 + 공휴일의 경유에만 요일 뒤에 (휴일) 표기 하기
+    }
 
+    // TODO:5. 근무 배정 기능
+    private static void staffAssign(String month, String day, List<String> weekdayStaff, List<String> holidayStaff) {
+        //TODO: 법정 공휴일 1월 1일, 3월 1일, 5월 5일, 6월 6일, 8월 15일, 10월 3일, 10월 9일, 12월 25일
+        int dayOfWeekIndex = DAYS_OF_WEEK.indexOf(day);
+
+        if (month.equals("1") || month.equals("3") || month.equals("5") || month.equals("7") || month.equals("8")
+                || month.equals("10") || month.equals("12")) {
+            for (int i = 1; i <= 31; i++) {
+                String currentDayOfWeek = DAYS_OF_WEEK.get((dayOfWeekIndex + i - 1) % 7);
+                if (LEGAL_HOLIDAY.contains(month+"-"+i)){
+                    System.out.println(month + "월 " + i + "일 " + currentDayOfWeek + "(휴일)");
+                }
+                else
+                    System.out.println(month + "월 " + i + "일 " + currentDayOfWeek);
+            }
+        }
+        if (month.equals("4") || month.equals("6") || month.equals("9") || month.equals("11")) {
+            for (int i = 1; i <= 30; i++) {
+                String currentDayOfWeek = DAYS_OF_WEEK.get((dayOfWeekIndex + i - 1) % 7);
+                if (LEGAL_HOLIDAY.contains(month+"-"+i)){
+                    System.out.println(month + "월 " + i + "일 " + currentDayOfWeek + "(휴일)");
+                }
+                else
+                    System.out.println(month + "월 " + i + "일 " + currentDayOfWeek);
+            }
+        }
+        if (month.equals("2")) {
+            for (int i = 1; i <= 28; i++) {
+                String currentDayOfWeek = DAYS_OF_WEEK.get((dayOfWeekIndex + i - 1) % 7);
+                if (LEGAL_HOLIDAY.contains(month+"-"+i)){
+                    System.out.println(month + "월 " + i + "일 " + currentDayOfWeek + "(휴일)");
+                }
+                else
+                    System.out.println(month + "월 " + i + "일 " + currentDayOfWeek);
+            }
+        }
     }
 
     // TODO:1. 월과 시작요일 입력 기능
@@ -89,8 +131,8 @@ public class Application {
         return temp;
     }
 
-    private static void validateStaffConsistency(List<String> weekdayStaff, List<String> holidayStaff){
-        if(!(new HashSet<>(holidayStaff).equals(new HashSet<>(weekdayStaff)))){
+    private static void validateStaffConsistency(List<String> weekdayStaff, List<String> holidayStaff) {
+        if (!(new HashSet<>(holidayStaff).equals(new HashSet<>(weekdayStaff)))) {
             throw new IllegalArgumentException("[ERROR] 비상 근무자가 평일, 휴일 순번에 각각 1회 편성되지 않았습니다.");
         }
     }
