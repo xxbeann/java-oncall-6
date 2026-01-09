@@ -20,8 +20,14 @@ public class Application {
         List<String> monthAndDay = repeatUntilSuccess(Application::readMonthAndDay);
         String month = monthAndDay.get(0);
         String day = monthAndDay.get(1);
+        System.out.println(month);
+        System.out.println(day);
         // TODO:2. 비상근무 사원 입력
-        String emergencyStaff = repeatUntilSuccess(Application::readEmergencyStaff);
+        List<List<String>> emergencyStaff = repeatUntilSuccess(Application::readEmergencyStaff);
+        List<String> weekdayStaff = emergencyStaff.get(0);
+        List<String> holidayStaff = emergencyStaff.get(1);
+        System.out.println("[Debug]평일 비상근무: "+ weekdayStaff);
+        System.out.println("[Debug]평일 비상근무: "+ holidayStaff);
         // TODO:4. 평일 + 공휴일의 경유에만 요일 뒤에 (휴일) 표기 하기
         // TODO:5. 근무 배정 기능
 
@@ -59,17 +65,17 @@ public class Application {
     }
 
     // TODO:2. 비상근무 사원 입력
-    private static String readEmergencyStaff() {
+    private static List<List<String>> readEmergencyStaff() {
         System.out.print("평일 비상 근무 순번대로 사원 닉네임을 입력하세요> ");
-        String weekdayStaff = Console.readLine();
-        validateStaff(weekdayStaff);
+        String weekdayStaffInput = Console.readLine();
+        List<String> weekdayStaff = validateStaff(weekdayStaffInput);
         System.out.print("휴일 비상 근무 순번대로 사원 닉네임을 입력하세요> ");
-        String holidayStaff = Console.readLine();
-        validateStaff(holidayStaff);
-        return holidayStaff;
+        String holidayStaffInput = Console.readLine();
+        List<String> holidayStaff = validateStaff(holidayStaffInput);
+        return List.of(weekdayStaff, holidayStaff);
     }
 
-    private static void validateStaff(String input) {
+    private static List<String> validateStaff(String input) {
         validateNotBlank(input);
         validateDelimiter(input, ",");
         List<String> temp = parseInput(input);
@@ -79,6 +85,7 @@ public class Application {
         }
         validateListSize(temp);
         validateDuplicate(temp);
+        return temp;
     }
 
     // TODO: 빈 값 및 공백 검증
