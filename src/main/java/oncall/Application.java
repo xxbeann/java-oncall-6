@@ -3,6 +3,7 @@ package oncall;
 import camp.nextstep.edu.missionutils.Console;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.function.Supplier;
@@ -45,6 +46,8 @@ public class Application {
     // TODO:5. 근무 배정 기능
     public static void staffAssign(String month, String day, List<String> weekdayStaff, List<String> holidayStaff) {
         List<String> result = new ArrayList<>();
+        List<String> tempWeekdayStaff = new ArrayList<>(weekdayStaff);
+        List<String> tempholidayStaff = new ArrayList<>(holidayStaff);
         int dayStartIndex = DAYS_OF_WEEK.indexOf(day);
         int monthIndex = MONTHS.indexOf(month);
         int lastDay = LAST_DAY.get(monthIndex);
@@ -54,20 +57,44 @@ public class Application {
             String prefix = "";
             String yoil = DAYS_OF_WEEK.get((dayStartIndex - 1 + i) % 7);
             if (isHoliday(yoil) && isLegalHoliday(month, i)) {
-                result.add(holidayStaff.get(holidayIndex % holidayStaff.size()));
+                if (!result.isEmpty()) {
+                    if (tempholidayStaff.get(holidayIndex % tempholidayStaff.size()).equals(result.getLast())) {
+                        Collections.swap(tempholidayStaff, holidayIndex % tempholidayStaff.size(),
+                                (holidayIndex+1) % tempholidayStaff.size());
+                    }
+                }
+                result.add(tempholidayStaff.get(holidayIndex % tempholidayStaff.size()));
                 holidayIndex++;
             }
             if (isHoliday(yoil) && !isLegalHoliday(month, i)) {
-                result.add(holidayStaff.get(holidayIndex % holidayStaff.size()));
+                if (!result.isEmpty()) {
+                    if (tempholidayStaff.get(holidayIndex % tempholidayStaff.size()).equals(result.getLast())) {
+                        Collections.swap(tempholidayStaff, holidayIndex % tempholidayStaff.size(),
+                                (holidayIndex+1) % tempholidayStaff.size());
+                    }
+                }
+                result.add(tempholidayStaff.get(holidayIndex % tempholidayStaff.size()));
                 holidayIndex++;
             }
             if (!isHoliday(yoil) && isLegalHoliday(month, i)) {
-                result.add(holidayStaff.get(holidayIndex % holidayStaff.size()));
+                if (!result.isEmpty()) {
+                    if (tempholidayStaff.get(holidayIndex % tempholidayStaff.size()).equals(result.getLast())) {
+                        Collections.swap(tempholidayStaff, holidayIndex % tempholidayStaff.size(),
+                                (holidayIndex+1) % tempholidayStaff.size());
+                    }
+                }
+                result.add(tempholidayStaff.get(holidayIndex % tempholidayStaff.size()));
                 holidayIndex++;
                 prefix = "(휴일)";
             }
             if (!isHoliday(yoil) && !isLegalHoliday(month, i)) {
-                result.add(weekdayStaff.get(weekdayIndex % weekdayStaff.size()));
+                if (!result.isEmpty()) {
+                    if (tempWeekdayStaff.get(weekdayIndex % tempWeekdayStaff.size()).equals(result.getLast())) {
+                        Collections.swap(tempWeekdayStaff, weekdayIndex % tempWeekdayStaff.size(),
+                                (weekdayIndex+1) % tempWeekdayStaff.size());
+                    }
+                }
+                result.add(tempWeekdayStaff.get(weekdayIndex % tempWeekdayStaff.size()));
                 weekdayIndex++;
             }
             System.out.println(month + "월 " + i + "일 " + yoil + prefix + " " + result.get(i - 1));
